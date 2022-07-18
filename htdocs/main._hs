@@ -1,0 +1,172 @@
+-- View
+
+def view.renderFiles()
+    fetch /api/list-files
+        set response to result as an Object
+        if response.files is not empty
+            set output to ""
+            for file in response.files
+                append `<li><div class="uk-grid">
+                        <div class="uk-width-expand@s">${file}</div>
+                        <div>
+                            <a href="#" uk-icon="icon: users" uk-tooltip="List Users" onclick="view.renderCreds('${file}')"></a>
+                            <a href="#" uk-icon="icon: pencil" uk-tooltip="Rename File" onclick="view.showRenameFile('${file}')"></a>
+                            <a href="#" uk-icon="icon: trash" uk-tooltip="Delete File" onclick="view.showDeleteFile('${file}')"></a>
+                        </div>
+                    </div></li>` to output
+            put output into innerHTML of #listFiles
+            add @hidden to #boxListCredentials
+        end
+end
+
+def view.renderCreds(filename)
+    log 'view.renderCreds:', filename
+    fetch /api/list-credentials
+        set response to result as an Object
+        if response.credentials is not empty
+            set output to ""
+            for cred in response.credentials
+                append `<li><div class="uk-grid">
+                        <div class="uk-width-expand@s">${cred}</div>
+                        <div>
+                            <a href="#" uk-icon="icon: pencil" uk-tooltip="Modify Credential" onclick="view.showRenameCred('${cred}')"></a>
+                            <a href="#" uk-icon="icon: trash" uk-tooltip="Delete Credential" onclick="view.showDeleteCred('${cred}')"></a>
+                        </div>
+                    </div></li>` to output
+            put output into innerHTML of #listCredentials
+            add @data-enable-scripting to #listCredentials
+            remove @hidden from #boxListCredentials
+        end
+end
+
+def view.showNewFile()
+    add @hidden to .uk-panel
+    remove @hidden from #formNewFile
+end
+
+def view.showRenameFile(filename)
+    log 'view.showRenameFile:', filename
+    set #formRenameFile-filename@value to filename
+    add @hidden to .uk-panel
+    remove @hidden from #formRenameFile
+end
+
+def view.showDeleteFile(filename)
+    log 'view.showDeleteFile:', filename
+    set #formDeleteFile-filename@value to filename
+    add @hidden to .uk-panel
+    remove @hidden from #formDeleteFile
+end
+
+def view.showNewCred()
+    add @hidden to .uk-panel
+    remove @hidden from #formNewCred
+end
+
+def view.showRenameCred(username)
+    log 'view.showRenameCred:', username
+    set #formRenameCred-username@value to username
+    add @hidden to .uk-panel
+    remove @hidden from #formRenameCred
+end
+
+def view.showDeleteCred(username)
+    log 'view.showDeleteCred:', username
+    set #formDeleteCred-username@value to username
+    add @hidden to .uk-panel
+    remove @hidden from #formDeleteCred
+end
+
+def view.alertInfo(message)
+    remove @hidden from #panelAlert
+    remove [.uk-alert-primary, .uk-alert-success, .uk-alert-warning, .uk-alert-danger] from #panelAlert
+    add .uk-alert-primary to #panelAlert
+    put the message into the innerHTML of #panelAlertContent
+end
+
+def view.alertSuccess(message)
+    remove @hidden from #panelAlert
+    remove [.uk-alert-primary, .uk-alert-success, .uk-alert-warning, .uk-alert-danger] from #panelAlert
+    add .uk-alert-success to #panelAlert
+    put the message into the innerHTML of #panelAlertContent
+end
+
+def view.alertWarning(message)
+    remove @hidden from #panelAlert
+    remove [.uk-alert-primary, .uk-alert-success, .uk-alert-warning, .uk-alert-danger] from #panelAlert
+    add .uk-alert-warning to #panelAlert
+    put the message into the innerHTML of #panelAlertContent
+end
+
+def view.alertDanger(message)
+    remove @hidden from #panelAlert
+    remove [.uk-alert-primary, .uk-alert-success, .uk-alert-warning, .uk-alert-danger] from #panelAlert
+    add .uk-alert-danger to #panelAlert
+    put the message into the innerHTML of #panelAlertContent
+end
+
+-- Control
+
+def control.submitNewFile()
+    set filename to value of #formNewFile-filename
+    set cargo to { filename: filename } as JSON
+    fetch `/api/new-file` { method: 'post', body: cargo, headers: { 'Content-type': 'application/json' } }
+        set response to result as an Object
+        view.alertSuccess(message of response)
+        view.renderFiles()
+        add @hidden to #formNewFile
+end
+
+def control.submitRenameFile()
+    set filename to value of #formRenameFile-filename
+    set newFilename to value of #formRenameFile-newFilename
+    set cargo to { newFilename: newFilename } as JSON
+    fetch `/api/rename-file/${filename}` { method: 'put', body: cargo, headers: { 'Content-type': 'application/json' } } 
+        set response to result as an Object
+        view.alertSuccess(message of response)
+        view.renderFiles()
+        add @hidden to #formRenameFile
+end
+
+def control.confirmDeleteFile()
+    set filename to value of #formDeleteFile-filename
+    fetch `/api/delete-file/${filename}` { method: 'delete' }
+        set response to result as an Object
+        view.alertSuccess(message of response)
+        view.renderFiles()
+        add @hidden to #formDeleteFile
+end
+
+def control.submitNewCred()
+    set filename to value of #formNewCred-filename
+    set username to value of #formNewCred-username
+    set password to value of #formNewCred-password
+    set cargo to { username: username, password: password } as JSON
+    fetch `/api/new-credential` { method: 'post', body: cargo, headers: { 'Content-type': 'application/json' } }
+        set response to result as an Object
+        view.alertSuccess(message of response)
+        view.renderCreds(filename)
+        add @hidden to #formNewCred
+end
+
+def control.submitRenameCred()
+    set filename to value of #formRenameCred-filename
+    set username to value of #formRenameCred-username
+    set newUsername to value of #formRenameCred-newUsername
+    set cargo to { newUsername: newUsername } as JSON
+    fetch `/api/rename-credential/${username}` { method: 'put', body: cargo, headers: { 'Content-type': 'application/json' } }
+        set response to result as an Object
+        view.alertSuccess(message of response)
+        view.renderCreds(filename)
+        add @hidden to #formRenameCred
+end
+
+def control.confirmDeleteCred()
+    set filename to value of #formDeleteCred-filename
+    set username to value of #formDeleteCred-username
+    fetch `/api/delete-credential/${username}` { method: 'delete' }
+        set response to result as an Object
+        view.alertSuccess(message of response)
+        view.renderCreds(filename)
+        add @hidden to #formDeleteCred
+end

@@ -1,0 +1,9 @@
+.hide {
+	display: none;
+}
+.brand img {
+	width: 48px;
+}
+.uk-list li:hover {
+	background: lavender;
+}

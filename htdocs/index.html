@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>htpasswd-manager</title>
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.15.1/dist/css/uikit.min.css" />
+    <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+    <div>
+        <nav class="uk-section-primary" uk-navbar>
+            <div class="uk-navbar-left">
+                <ul class="uk-navbar-nav">
+                    <li class="uk-active uk-margin-large-right">
+                        <a href="#" class="brand uk-margin-left"><img src="img/logo.png" alt="icon" class="uk-margin-small-right"><span>htpasswd-manager</span></a>
+                    </li>
+                    <li class="uk-parent"><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="uk-margin uk-grid-divider uk-grid-column-small" uk-grid>
+            <div class="uk-width-1-4@s uk-margin-left" id="boxListFiles">
+                <div class="uk-grid">
+                    <div class="uk-text-muted uk-text-uppercase uk-width-expand@s">Files</div>
+                    <div><a href="#" uk-icon="icon: plus-circle" uk-tooltip="New File" _="on click view.showNewFile()"></a></div>
+                </div>
+                <ul class="uk-list uk-list-striped" id="listFiles" _="init view.renderFiles()">
+                    <li>
+                        <div class="uk-grid">
+                            <div class="uk-width-expand@s">Not available</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="uk-width-1-4@s" hidden id="boxListCredentials">
+                <div class="uk-grid">
+                    <div class="uk-text-muted uk-text-uppercase uk-width-expand@s">Credentials</div>
+                    <div><a href="#" uk-icon="icon: plus-circle" uk-tooltip="New Credential" _="on click view.showNewCred()"></a></div>
+                </div>
+                <ul class="uk-list uk-list-striped" id="listCredentials">
+                    <li>
+                        <div class="uk-grid">
+                            <div class="uk-width-expand@s">Not available</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="uk-width-expand@s uk-margin-right">
+                <div class="uk-alert-primary" uk-alert id="panelAlert" hidden>
+                    <a class="uk-alert-close" uk-close _="on click halt the event then add @hidden to #panelAlert"></a>
+                    <p id="panelAlertContent">Content of alert</p>
+                </div>
+                <div class="uk-panel uk-card uk-card-default uk-card-body" hidden id="formNewFile">
+                    <form>
+                        <fieldset class="uk-fieldset">
+                            <legend class="uk-legend">New File</legend>
+                            <div class="uk-margin">
+                                <input id="formNewFile-filename" class="uk-input" type="text" placeholder="Filename">
+                            </div>
+                            <button class="uk-button uk-button-primary" _="on click control.submitNewFile()">Submit</button>
+                            <button class="uk-button uk-button-default" _="on click add @hidden to #formNewFile">Cancel</button>
+                        </fieldset>
+                    </form>
+                </div>
+                <div class="uk-panel uk-card uk-card-default uk-card-body" hidden id="formRenameFile">
+                    <form>
+                        <fieldset class="uk-fieldset">
+                            <legend class="uk-legend">Rename File</legend>
+                            <div class="uk-margin">
+                                <input id="formRenameFile-newFilename" class="uk-input" type="text" placeholder="Filename">
+                            </div>
+                            <input id="formRenameFile-filename" type="hidden">
+                            <button class="uk-button uk-button-secondary" _="on click control.submitRenameFile()">Submit</button>
+                            <button class="uk-button uk-button-default" _="on click add @hidden to #formRenameFile">Cancel</button>
+                        </fieldset>
+                    </form>
+                </div>
+                <div class="uk-panel uk-card uk-card-default uk-card-body" hidden id="formDeleteFile">
+                    <h3 class="uk-card-title">Confirm Delete File!</h3>
+                    <p>Are you sure you want to delete this file?</p>
+                    <input id="formDeleteFile-filename" type="hidden">
+                    <button class="uk-button uk-button-danger" _="on click control.confirmDeleteFile()">Delete</button>
+                    <button class="uk-button uk-button-default" _="on click add @hidden to #formDeleteFile">Cancel</button>
+                </div>
+                <div class="uk-panel uk-card uk-card-default uk-card-body" hidden id="formNewCred">
+                    <form>
+                        <fieldset class="uk-fieldset">
+                            <legend class="uk-legend">New Credential</legend>
+                            <div class="uk-margin">
+                                <input id="formNewCred-username" class="uk-input" type="text" placeholder="Username">
+                            </div>
+                            <div class="uk-margin">
+                                <input id="formNewCred-password" class="uk-input" type="password" placeholder="Password">
+                            </div>
+                            <input id="formNewCred-filename" type="hidden">
+                            <button class="uk-button uk-button-primary" _="on click control.submitNewCred()">Submit</button>
+                            <button class="uk-button uk-button-default" _="on click add @hidden to #formNewCred">Cancel</button>
+                        </fieldset>
+                    </form>
+                </div>
+                <div class="uk-panel uk-card uk-card-default uk-card-body" hidden id="formRenameCred">
+                    <form>
+                        <fieldset class="uk-fieldset">
+                            <legend class="uk-legend">Rename Credential</legend>
+                            <div class="uk-margin">
+                                <input id="formRenameCred-newUsername" class="uk-input" type="text" placeholder="Username">
+                            </div>
+                            <input id="formRenameCred-filename" type="hidden">
+                            <input id="formRenameCred-username" type="hidden">
+                            <button class="uk-button uk-button-secondary" _="on click control.submitRenameCred()">Submit</button>
+                            <button class="uk-button uk-button-default" _="on click add @hidden to #formRenameCred">Cancel</button>
+                        </fieldset>
+                    </form>
+                </div>
+                <div class="uk-panel uk-card uk-card-default uk-card-body" hidden id="formDeleteCred">
+                    <h3 class="uk-card-title">Confirm Delete Credential!</h3>
+                    <p>Are you sure you want to delete this credential?</p>
+                    <input id="formDeleteCred-filename" type="hidden">
+                    <input id="formDeleteCred-username" type="hidden">
+                    <button class="uk-button uk-button-danger" _="on click control.confirmDeleteCred()">Delete</button>
+                    <button class="uk-button uk-button-default" _="on click add @hidden to #formDeleteCred">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.1/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.1/dist/js/uikit-icons.min.js"></script>
+    <script type="text/hyperscript" src="main._hs"></script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.6"></script>
+</body>
+
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "htpasswd-manager",
+  "version": "1.0.0",
+  "description": "A web based interface to manage collections of htpasswd files having numerous accounts",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isurfer21/htpasswd-manager.git"
+  },
+  "author": "Abhishek Kumar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/isurfer21/htpasswd-manager/issues"
+  },
+  "homepage": "https://github.com/isurfer21/htpasswd-manager#readme",
+  "dependencies": {
+    "@fastify/static": "^6.4.0",
+    "fastify": "^4.2.1"
+  }
+}
