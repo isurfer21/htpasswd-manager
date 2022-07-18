@@ -105,3 +105,4 @@ dist
 
 # Extras
 package-lock.json
+.archive

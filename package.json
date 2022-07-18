@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "watch": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,6 +20,10 @@
   "homepage": "https://github.com/isurfer21/htpasswd-manager#readme",
   "dependencies": {
     "@fastify/static": "^6.4.0",
-    "fastify": "^4.2.1"
+    "fastify": "^4.2.1",
+    "htpasswd-mgr": "^1.1.6"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
   }
 }

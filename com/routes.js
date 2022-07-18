@@ -12,14 +12,14 @@ class Routes {
 	}
 	async initialize(fastify, options) {
 		fastify.get('/api', this.isAlive);
-		fastify.get('/api/list-files', controller.listFiles);
-		fastify.post('/api/new-file', controller.newFile);
-		fastify.put('/api/rename-file/:filename', controller.renameFile);
-		fastify.delete('/api/delete-file/:filename', controller.deleteFile);
-		fastify.get('/api/list-credentials', controller.listCredentials);
-		fastify.post('/api/new-credential', controller.newCredential);
-		fastify.put('/api/rename-credential/:username', controller.renameCredential);
-		fastify.delete('/api/delete-credential/:username', controller.deleteCredential);
+		fastify.get('/api/files', controller.listFiles);
+		fastify.post('/api/file', controller.newFile);
+		fastify.put('/api/file/:filename', controller.renameFile);
+		fastify.delete('/api/file/:filename', controller.deleteFile);
+		fastify.get('/api/file/:filename/credentials', controller.listCredentials);
+		fastify.post('/api/file/:filename/credential', controller.newCredential);
+		fastify.put('/api/file/:filename/credential/:username', controller.reviseCredential);
+		fastify.delete('/api/file/:filename/credential/:username', controller.deleteCredential);
 	}
 }
 

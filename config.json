@@ -1,4 +1,6 @@
 {
 	"host": "0.0.0.0",
-	"port": "2207"
+	"port": "2207",
+	"algorithm": "md5",
+	"vaultPath": "/Users/abhishekkumar/GitHub/htpasswd-manager/vault"
 }

@@ -1,10 +1,10 @@
 -- View
 
 def view.renderFiles()
-    fetch /api/list-files
+    fetch `/api/files`
         set response to result as an Object
+        set output to ""
         if response.files is not empty
-            set output to ""
             for file in response.files
                 append `<li><div class="uk-grid">
                         <div class="uk-width-expand@s">${file}</div>
@@ -14,29 +14,39 @@ def view.renderFiles()
                             <a href="#" uk-icon="icon: trash" uk-tooltip="Delete File" onclick="view.showDeleteFile('${file}')"></a>
                         </div>
                     </div></li>` to output
-            put output into innerHTML of #listFiles
-            add @hidden to #boxListCredentials
+            end
+        else
+            append `<li><div class="uk-grid">
+                    <div class="uk-width-expand@s">Not available</div>
+                </div></li>` to output
         end
+        put output into innerHTML of #listFiles
+        add @hidden to #boxListCredentials    
 end
 
 def view.renderCreds(filename)
     log 'view.renderCreds:', filename
-    fetch /api/list-credentials
+    fetch `/api/file/${filename}/credentials`
         set response to result as an Object
+        set output to "" 
         if response.credentials is not empty
-            set output to ""
             for cred in response.credentials
                 append `<li><div class="uk-grid">
                         <div class="uk-width-expand@s">${cred}</div>
                         <div>
-                            <a href="#" uk-icon="icon: pencil" uk-tooltip="Modify Credential" onclick="view.showRenameCred('${cred}')"></a>
-                            <a href="#" uk-icon="icon: trash" uk-tooltip="Delete Credential" onclick="view.showDeleteCred('${cred}')"></a>
+                            <a href="#" uk-icon="icon: pencil" uk-tooltip="Revise Credential" onclick="view.showReviseCred('${filename}', '${cred}')"></a>
+                            <a href="#" uk-icon="icon: trash" uk-tooltip="Delete Credential" onclick="view.showDeleteCred('${filename}', '${cred}')"></a>
                         </div>
                     </div></li>` to output
-            put output into innerHTML of #listCredentials
-            add @data-enable-scripting to #listCredentials
-            remove @hidden from #boxListCredentials
+            end
+        else
+            append `<li><div class="uk-grid">
+                    <div class="uk-width-expand@s">Not available</div>
+                </div></li>` to output
         end
+        put output into innerHTML of #listCredentials
+        remove @hidden from #boxListCredentials
+        set #btnShowNewCred@onclick to `view.showNewCred('${filename}')`
 end
 
 def view.showNewFile()
@@ -58,20 +68,24 @@ def view.showDeleteFile(filename)
     remove @hidden from #formDeleteFile
 end
 
-def view.showNewCred()
+def view.showNewCred(filename)
+    log 'view.showNewCred:', filename
+    set #formNewCred-filename@value to filename
     add @hidden to .uk-panel
     remove @hidden from #formNewCred
 end
 
-def view.showRenameCred(username)
-    log 'view.showRenameCred:', username
-    set #formRenameCred-username@value to username
+def view.showReviseCred(filename, username)
+    log 'view.showReviseCred:', filename, username
+    set #formReviseCred-filename@value to filename
+    set #formReviseCred-username@value to username
     add @hidden to .uk-panel
-    remove @hidden from #formRenameCred
+    remove @hidden from #formReviseCred
 end
 
-def view.showDeleteCred(username)
-    log 'view.showDeleteCred:', username
+def view.showDeleteCred(filename, username)
+    log 'view.showDeleteCred:', filename, username
+    set #formDeleteCred-filename@value to filename
     set #formDeleteCred-username@value to username
     add @hidden to .uk-panel
     remove @hidden from #formDeleteCred
@@ -110,7 +124,7 @@ end
 def control.submitNewFile()
     set filename to value of #formNewFile-filename
     set cargo to { filename: filename } as JSON
-    fetch `/api/new-file` { method: 'post', body: cargo, headers: { 'Content-type': 'application/json' } }
+    fetch `/api/file` { method: 'post', body: cargo, headers: { 'Content-type': 'application/json' } }
         set response to result as an Object
         view.alertSuccess(message of response)
         view.renderFiles()
@@ -120,8 +134,8 @@ end
 def control.submitRenameFile()
     set filename to value of #formRenameFile-filename
     set newFilename to value of #formRenameFile-newFilename
-    set cargo to { newFilename: newFilename } as JSON
-    fetch `/api/rename-file/${filename}` { method: 'put', body: cargo, headers: { 'Content-type': 'application/json' } } 
+    set cargo to { filename: newFilename } as JSON
+    fetch `/api/file/${filename}` { method: 'put', body: cargo, headers: { 'Content-type': 'application/json' } } 
         set response to result as an Object
         view.alertSuccess(message of response)
         view.renderFiles()
@@ -130,7 +144,7 @@ end
 
 def control.confirmDeleteFile()
     set filename to value of #formDeleteFile-filename
-    fetch `/api/delete-file/${filename}` { method: 'delete' }
+    fetch `/api/file/${filename}` { method: 'delete' }
         set response to result as an Object
         view.alertSuccess(message of response)
         view.renderFiles()
@@ -142,29 +156,30 @@ def control.submitNewCred()
     set username to value of #formNewCred-username
     set password to value of #formNewCred-password
     set cargo to { username: username, password: password } as JSON
-    fetch `/api/new-credential` { method: 'post', body: cargo, headers: { 'Content-type': 'application/json' } }
+    fetch `/api/file/${filename}/credential` { method: 'post', body: cargo, headers: { 'Content-type': 'application/json' } }
         set response to result as an Object
         view.alertSuccess(message of response)
         view.renderCreds(filename)
         add @hidden to #formNewCred
 end
 
-def control.submitRenameCred()
-    set filename to value of #formRenameCred-filename
-    set username to value of #formRenameCred-username
-    set newUsername to value of #formRenameCred-newUsername
-    set cargo to { newUsername: newUsername } as JSON
-    fetch `/api/rename-credential/${username}` { method: 'put', body: cargo, headers: { 'Content-type': 'application/json' } }
+def control.submitReviseCred()
+    set filename to value of #formReviseCred-filename
+    set username to value of #formReviseCred-username
+    set newUsername to value of #formReviseCred-newUsername
+    set newPassword to value of #formReviseCred-newPassword
+    set cargo to { username: newUsername, password: newPassword } as JSON
+    fetch `/api/file/${filename}/credential/${username}` { method: 'put', body: cargo, headers: { 'Content-type': 'application/json' } }
         set response to result as an Object
         view.alertSuccess(message of response)
         view.renderCreds(filename)
-        add @hidden to #formRenameCred
+        add @hidden to #formReviseCred
 end
 
 def control.confirmDeleteCred()
     set filename to value of #formDeleteCred-filename
     set username to value of #formDeleteCred-username
-    fetch `/api/delete-credential/${username}` { method: 'delete' }
+    fetch `/api/file/${filename}/credential/${username}` { method: 'delete' }
         set response to result as an Object
         view.alertSuccess(message of response)
         view.renderCreds(filename)

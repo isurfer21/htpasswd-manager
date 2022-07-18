@@ -16,10 +16,8 @@
             <div class="uk-navbar-left">
                 <ul class="uk-navbar-nav">
                     <li class="uk-active uk-margin-large-right">
-                        <a href="#" class="brand uk-margin-left"><img src="img/logo.png" alt="icon" class="uk-margin-small-right"><span>htpasswd-manager</span></a>
+                        <a href="https://github.com/isurfer21/htpasswd-manager" class="brand uk-margin-left"><img src="img/logo.png" alt="icon" class="uk-margin-small-right"><span>htpasswd-manager</span></a>
                     </li>
-                    <li class="uk-parent"><a href="#home">Home</a></li>
-                    <li><a href="#about">About</a></li>
                 </ul>
             </div>
         </nav>
@@ -40,7 +38,7 @@
             <div class="uk-width-1-4@s" hidden id="boxListCredentials">
                 <div class="uk-grid">
                     <div class="uk-text-muted uk-text-uppercase uk-width-expand@s">Credentials</div>
-                    <div><a href="#" uk-icon="icon: plus-circle" uk-tooltip="New Credential" _="on click view.showNewCred()"></a></div>
+                    <div><a href="#" uk-icon="icon: plus-circle" uk-tooltip="New Credential" id="btnShowNewCred"></a></div>
                 </div>
                 <ul class="uk-list uk-list-striped" id="listCredentials">
                     <li>
@@ -103,17 +101,20 @@
                         </fieldset>
                     </form>
                 </div>
-                <div class="uk-panel uk-card uk-card-default uk-card-body" hidden id="formRenameCred">
+                <div class="uk-panel uk-card uk-card-default uk-card-body" hidden id="formReviseCred">
                     <form>
                         <fieldset class="uk-fieldset">
-                            <legend class="uk-legend">Rename Credential</legend>
+                            <legend class="uk-legend">Revise Credential</legend>
                             <div class="uk-margin">
-                                <input id="formRenameCred-newUsername" class="uk-input" type="text" placeholder="Username">
+                                <input id="formReviseCred-newUsername" class="uk-input" type="text" placeholder="Username">
                             </div>
-                            <input id="formRenameCred-filename" type="hidden">
-                            <input id="formRenameCred-username" type="hidden">
-                            <button class="uk-button uk-button-secondary" _="on click control.submitRenameCred()">Submit</button>
-                            <button class="uk-button uk-button-default" _="on click add @hidden to #formRenameCred">Cancel</button>
+                            <div class="uk-margin">
+                                <input id="formReviseCred-newPassword" class="uk-input" type="password" placeholder="Password">
+                            </div>
+                            <input id="formReviseCred-filename" type="hidden">
+                            <input id="formReviseCred-username" type="hidden">
+                            <button class="uk-button uk-button-secondary" _="on click control.submitReviseCred()">Submit</button>
+                            <button class="uk-button uk-button-default" _="on click add @hidden to #formReviseCred">Cancel</button>
                         </fieldset>
                     </form>
                 </div>
