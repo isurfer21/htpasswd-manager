@@ -1,6 +1,6 @@
 {
-  "name": "htpasswd-manager",
-  "version": "1.0.0",
+  "name": "node-htpasswd-manager",
+  "version": "1.0.1",
   "description": "A web based interface to manage collections of htpasswd files having numerous accounts",
   "main": "index.js",
   "scripts": {
@@ -26,5 +26,5 @@
   "devDependencies": {
     "nodemon": "^2.0.19"
   },
-  "keywords": ["htpasswd", "htpasswd-manager", "hyperscript"]
+  "keywords": ["htpasswd", "htpasswd-manager", "hyperscript", "node.js", "webapp-utility", "md5"]
 }
